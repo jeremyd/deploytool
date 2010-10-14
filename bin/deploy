@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+require 'fileutils'
+# Development mode path change (from local checkout)
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'rubygems'
+require 'trollop'
+require 'deploytool'
+
+opts = Trollop::options do
+  text "This command line util can deploy a git or svn repository into a target directory with all the capistrano style bells and whistles for shared files such as logs, pids, database configs and more."
+  opt :git, "Use GIT (default).  GIT authentication must be setup by the user if working with a private repository"
+  opt :svn, "Use SVN.  SVN authentication is used if environment variables $OPT_SVN_USERNAME and $OPT_SVN_PASSWORD are set."
+  opt :destination, "Destination directory where top level of the capistrano style tree will be located", :type => :string, :required => true
+  opt :repository, "Repository URL (svn or git)", :type => :string, :required => true
+  opt :revision, "Branch (git), SHA1 (git), Tag (git/svn), or Revision (svn) to use for the clone/checkout", :type => :string, :short => 'v'
+  opt :rollback, "Instead of doing a deploy, do a rollback to the previous code"
+end
+
+deploy = Deploytool.new
+
+if opts[:svn]
+  deploy.use_svn(opts)
+else
+  deploy.use_git(opts)
+end
+
+deploy.run_solo
