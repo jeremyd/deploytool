@@ -14,6 +14,7 @@ opts = Trollop::options do
   opt :repository, "Repository URL (svn or git)", :type => :string, :required => true
   opt :revision, "Branch (git), SHA1 (git), Tag (git/svn), or Revision (svn) to use for the clone/checkout", :type => :string, :short => 'v'
   opt :rollback, "Instead of doing a deploy, do a rollback to the previous code"
+  opt :force, "Force the re-download of a revision.  Force deploy.  Warning: causes some downtime!"
 end
 
 deploy = Deploytool.new
